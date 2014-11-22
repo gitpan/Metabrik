@@ -4,7 +4,7 @@
       "GomoR <gomor_at_metabrik.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.421",
+   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.142060",
    "license" : [
       "bsd"
    ],
@@ -13,48 +13,39 @@
       "version" : "2"
    },
    "name" : "Metabrik",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
    "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0"
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Class::Gomor" : "0",
+            "Cwd" : "0",
+            "Data::Dump" : "0",
+            "File::Find" : "0",
+            "File::HomeDir" : "0",
+            "IO::All" : "0",
+            "Lexical::Persistence" : "0",
+            "Module::Reload" : "0",
+            "Term::ANSIColor" : "0",
+            "Term::Shell" : "0",
+            "local::lib" : "0"
          }
       }
    },
-   "provides" : {
-      "Metabrik" : {
-         "file" : "lib/Metabrik.pm",
-         "version" : "1.00"
-      },
-      "Metabrik::Core::Context" : {
-         "file" : "lib/Metabrik/Core/Context.pm"
-      },
-      "Metabrik::Core::Global" : {
-         "file" : "lib/Metabrik/Core/Global.pm"
-      },
-      "Metabrik::Core::Log" : {
-         "file" : "lib/Metabrik/Core/Log.pm"
-      },
-      "Metabrik::Core::Shell" : {
-         "file" : "lib/Metabrik/Core/Shell.pm"
-      },
-      "Metabrik::Shell::Command" : {
-         "file" : "lib/Metabrik/Shell/Command.pm"
-      },
-      "Metabrik::Shell::History" : {
-         "file" : "lib/Metabrik/Shell/History.pm"
-      },
-      "Metabrik::Shell::Rc" : {
-         "file" : "lib/Metabrik/Shell/Rc.pm"
-      },
-      "Metabrik::Shell::Script" : {
-         "file" : "lib/Metabrik/Shell/Script.pm"
-      }
-   },
    "release_status" : "stable",
-   "resources" : {
-      "license" : [
-         "http://opensource.org/licenses/BSD-3-Clause"
-      ]
-   },
-   "version" : "1.00"
+   "version" : "1.01"
 }

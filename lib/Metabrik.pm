@@ -1,11 +1,11 @@
 #
-# $Id: Metabrik.pm 355 2014-11-16 15:10:29Z gomor $
+# $Id: Metabrik.pm 358 2014-11-22 16:06:30Z gomor $
 #
 package Metabrik;
 use strict;
 use warnings;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 use base qw(Class::Gomor::Hash);
 
@@ -30,7 +30,7 @@ sub brik_version {
 
 sub brik_properties {
    return {
-      revision => '$Revision: 355 $',
+      revision => '$Revision: 358 $',
       tags => [ qw() ],
       attributes => {
          debug => [ qw(0|1) ],
@@ -90,8 +90,6 @@ sub brik_help_set {
    my $classes = $self->brik_classes;
 
    for my $class (@$classes) {
-      last if $class eq 'Metabrik';
-
       my $attributes = $class->brik_attributes;
 
       if (exists($attributes->{$attribute})) {
@@ -119,8 +117,6 @@ sub brik_help_run {
    my $classes = $self->brik_classes;
 
    for my $class (@$classes) {
-      last if $class eq 'Metabrik';
-
       my $commands = $class->brik_commands;
 
       if (exists($commands->{$command})) {
@@ -398,12 +394,6 @@ sub new {
    $r = $self->brik_check_use_properties;
    return unless $r;
 
-   $r = $self->brik_create_attributes;
-   return unless $r;
-
-   $r = $self->brik_set_default_attributes;
-   return unless $r;
-
    $r = $self->brik_check_require_modules;
    return unless $r;
 
@@ -413,32 +403,41 @@ sub new {
    $r = $self->brik_check_require_binaries;
    return unless $r;
 
+   $r = $self->brik_create_attributes;
+   return unless $r;
+
+   $r = $self->brik_set_default_attributes;
+   return unless $r;
+
    return $self->brik_preinit;
 }
 
+# Build Attributes, Class::Gomor style
 sub brik_create_attributes {
    my $self = shift;
 
-   # Build Attributes, Class::Gomor style
-   my $attributes = $self->brik_properties->{attributes};
-   my @as = ( keys %$attributes );
-   if (@as > 0) {
-      no strict 'refs';
+   my $classes = $self->brik_classes;
 
-      my $class = $self->brik_class;
+   for my $class (@$classes) {
+      my $attributes = $class->brik_properties->{attributes};
 
-      my %current = map { $_ => 1 } @{$class.'::AS'};
-      my @new = ();
-      for my $this (@as) {
-         if (! exists($current{$this})) {
-            push @new, $this;
+      my @as = ( keys %$attributes );
+      if (@as > 0) {
+         no strict 'refs';
+
+         my %current = map { $_ => 1 } @{$class.'::AS'};
+         my @new = ();
+         for my $this (@as) {
+            if (! exists($current{$this})) {
+               push @new, $this;
+            }
          }
-      }
 
-      push @{$class.'::AS'}, @new;
-      for my $this (@new) {
-         if (! $class->can($this)) {
-            $class->cgBuildAccessorsScalar([ $this ]);
+         push @{$class.'::AS'}, @new;
+         for my $this (@new) {
+            if (! $class->can($this)) {
+               $class->cgBuildAccessorsScalar([ $this ]);
+            }
          }
       }
    }
@@ -446,15 +445,13 @@ sub brik_create_attributes {
    return 1;
 }
 
+# Set default values for Attributes
 sub brik_set_default_attributes {
    my $self = shift;
 
-   # Set default values for Attributes
    my $classes = $self->brik_classes;
 
    for my $class (@$classes) {
-      next if (! $class->can('brik_properties'));
-
       # brik_properties() is the general value to use for the default_attributes
       if (exists($class->brik_properties->{attributes_default})) {
          for my $attribute (keys %{$class->brik_properties->{attributes_default}}) {
@@ -462,8 +459,6 @@ sub brik_set_default_attributes {
             $self->$attribute($class->brik_properties->{attributes_default}->{$attribute});
          }
       }
-
-      last if $class eq 'Metabrik';
    }
 
    # Then we look at standard default attributes
@@ -477,24 +472,36 @@ sub brik_set_default_attributes {
    return 1;
 }
 
+# Module check
 sub brik_check_require_modules {
    my $self = shift;
-   my ($modules) = @_;
+   my ($require_modules) = @_;
 
-   # Module check
-   $modules ||= $self->brik_properties->{require_modules};
-   for my $module (keys %$modules) {
-      eval("require $module;");
-      if ($@) {
-         return $self->_log_error("brik_check_require_modules: you have to install Module [$module]");
+   my @require_modules_list = ();
+   if (defined($require_modules)) {
+      push @require_modules_list, $require_modules;
+   }
+   else {
+      my $classes = $self->brik_classes;
+      for my $class (@$classes) {
+         push @require_modules_list, $class->brik_properties->{require_modules};
       }
+   }
 
-      my @imports = @{$modules->{$module}};
-      if (@imports > 0) {
-         eval('$module->import(@imports);');
+   for my $require_modules (@require_modules_list) {
+      for my $module (keys %$require_modules) {
+         eval("require $module;");
          if ($@) {
-            return $self->_log_error("brik_check_require_modules: unable to import functions ".
-               "[@imports] from Module [$module]: $@");
+            return $self->_log_error("brik_check_require_modules: you have to install Module [$module]");
+         }
+
+         my @imports = @{$require_modules->{$module}};
+         if (@imports > 0) {
+            eval('$module->import(@imports);');
+            if ($@) {
+               return $self->_log_error("brik_check_require_modules: unable to import functions ".
+                  "[@imports] from Module [$module]: $@");
+            }
          }
       }
    }
@@ -506,31 +513,45 @@ sub brik_check_require_used {
    my $self = shift;
    my ($require_used) = @_;
 
-   my $context = $self->context;
-
    # Not all modules are capable of checking context against used briks
    # For instance, core::context Brik itselves.
-   if (defined($context) && $context->can('used')) {
+   my $context = $self->context;
+   if (! defined($context) || ! $context->can('used')) {
+      return 1;
+   }
+
+   my @require_used_list = ();
+   if (defined($require_used)) {
+      push @require_used_list, $require_used;
+   }
+   else {
+      my $classes = $self->brik_classes;
+      for my $class (@$classes) {
+         push @require_used_list, $class->brik_properties->{require_used};
+      }
+   }
+
+   my $used = $context->used;
+
+   for my $require_used (@require_used_list) {
       my $error = 0;
-      my $used = $context->used;
-      $require_used ||= $self->brik_properties->{require_used};
       for my $brik (keys %$require_used) {
-         if (! $context->is_used($brik)) {
-            if ($self->global->auto_use_on_require) {
-               my $r = $context->use($brik);
-               if (! $r) {
-                  $self->_log_warning("brik_check_require_used: use: Brik [$brik] failed");
-                  $error++;
-                  next;
-               }
-               else {
-                  $self->_log_verbose("brik_check_require_used: use: Brik [$brik] success");
-               }
+         next if $context->is_used($brik);
+
+         if ($self->global->auto_use_on_require) {
+            my $r = $context->use($brik);
+            if (! $r) {
+               $self->_log_warning("brik_check_require_used: use: Brik [$brik] failed");
+               $error++;
+               next;
             }
             else {
-               $self->_log_error("brik_check_require_used: you must use Brik [$brik] first");
-               $error++;
+               $self->_log_verbose("brik_check_require_used: use: Brik [$brik] success");
             }
+         }
+         else {
+            $self->_log_error("brik_check_require_used: you must use Brik [$brik] first");
+            $error++;
          }
       }
 
@@ -544,17 +565,29 @@ sub brik_check_require_used {
 
 sub brik_check_require_binaries {
    my $self = shift;
-   my ($binaries) = @_;
+   my ($require_binaries) = @_;
 
-   $binaries ||= $self->brik_properties->{require_binaries};
+   my @require_binaries_list = ();
+   if (defined($require_binaries)) {
+      push @require_binaries_list, $require_binaries;
+   }
+   else {
+      my $classes = $self->brik_classes;
+      for my $class (@$classes) {
+         push @require_binaries_list, $class->brik_properties->{require_binaries};
+      }
+   }
+
    my %binaries_found = ();
-   for my $binary (keys %$binaries) {
-      $binaries_found{$binary} = 0;
-      my @path = split(':', $ENV{PATH});
-      for my $path (@path) {
-         if (-f "$path/$binary") {
-            $binaries_found{$binary} = 1;
-            last;
+   for my $require_binaries (@require_binaries_list) {
+      for my $binary (keys %$require_binaries) {
+         $binaries_found{$binary} = 0;
+         my @path = split(':', $ENV{PATH});
+         for my $path (@path) {
+            if (-f "$path/$binary") {
+               $binaries_found{$binary} = 1;
+               last;
+            }
          }
       }
    }
@@ -636,11 +669,12 @@ sub brik_classes {
    my @classes = ();
 
    for my $class (@$ary) {
+      # We may have Metabrik subclasses from other stuff than Metabrik
       next if ($class !~ /^Metabrik/);
       push @classes, $class;
    }
 
-   return \@classes;
+   return [ reverse @classes ];
 }
 
 sub brik_tags {
@@ -676,8 +710,6 @@ sub brik_commands {
    my $classes = $self->brik_classes;
 
    for my $class (@$classes) {
-      next unless $class->can('brik_properties');
-
       #$self->_log_info("brik_commands: class[$class]");
 
       if (exists($class->brik_properties->{commands})) {
@@ -692,8 +724,6 @@ sub brik_commands {
             $commands->{$command} = $class->brik_properties->{commands}->{$command};
          }
       }
-
-      last if $class eq 'Metabrik';
    }
 
    return $commands;
@@ -722,8 +752,6 @@ sub brik_attributes {
    my $classes = $self->brik_classes;
 
    for my $class (@$classes) {
-      next unless $class->can('brik_properties');
-
       #$self->_log_info("brik_attributes: class[$class]");
 
       if (exists($class->brik_properties->{attributes})) {
@@ -734,8 +762,6 @@ sub brik_attributes {
             $attributes->{$attribute} = $class->brik_properties->{attributes}->{$attribute};
          }
       }
-
-      last if $class eq 'Metabrik';
    }
 
    return $attributes;
@@ -766,13 +792,7 @@ sub brik_preinit {
 sub brik_init {
    my $self = shift;
 
-   if ($self->init_done) {
-      return;
-   }
-
-   $self->init_done(1);
-
-   return $self;
+   return $self->init_done(1);
 }
 
 sub brik_self {

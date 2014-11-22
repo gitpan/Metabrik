@@ -1,5 +1,5 @@
 #
-# $Id: Context.pm 354 2014-11-16 14:25:05Z gomor $
+# $Id: Context.pm 358 2014-11-22 16:06:30Z gomor $
 #
 package Metabrik::Core::Context;
 use strict;
@@ -9,7 +9,7 @@ use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 354 $',
+      revision => '$Revision: 358 $',
       tags => [ qw(core context main) ],
       attributes => {
          _lp => [ qw(INTERNAL) ],
@@ -149,9 +149,7 @@ sub new {
 }
 
 sub brik_init {
-   my $self = shift->SUPER::brik_init(
-      @_,
-   ) or return 1; # Init already done
+   my $self = shift;
 
    my $on_int = sub {
        $self->debug && $self->log->debug("INT captured");
@@ -168,7 +166,7 @@ sub brik_init {
       );
    }
 
-   return $self;
+   return $self->SUPER::brik_init;
 }
 
 sub do {
@@ -663,7 +661,14 @@ sub run {
 
       my $__ctx_run = $CON->{used}->{$__ctx_brik};
 
-      $__ctx_run->brik_init; # Will brik_init() only if not already done
+      # Will brik_init() only if not already done
+      if (! $__ctx_run->init_done) {
+         if (! $__ctx_run->brik_init) {
+            $ERR = 1;
+            my $MSG = "run: Brik [$__ctx_brik] init failed";
+            die("$MSG\n");
+         }
+      }
 
       for (@__ctx_args) {
          if (/^(\$.*)$/) {
@@ -712,7 +717,7 @@ sub save_state {
       }
       $CON->{used}->{$__ctx_brik}->{"__ctx_state"} = $__ctx_state;
 
-      return $ERR;
+      return 1;
    }, brik => $brik);
 
    return $r;
@@ -746,7 +751,7 @@ sub restore_state {
          }
       }
 
-      return $ERR;
+      return 1;
    }, brik => $brik);
 
    return $r;

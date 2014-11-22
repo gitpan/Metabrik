@@ -1,5 +1,5 @@
 #
-# $Id: Rc.pm 354 2014-11-16 14:25:05Z gomor $
+# $Id: Rc.pm 358 2014-11-22 16:06:30Z gomor $
 #
 # shell::rc Brik
 #
@@ -11,7 +11,7 @@ use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 354 $',
+      revision => '$Revision: 358 $',
       tags => [ qw(main shell rc) ],
       attributes => {
          rc_file => [ qw(file) ],
@@ -129,6 +129,7 @@ alias top "system top"
 alias history "run shell::history show"
 alias ! "run shell::history exec"
 alias cat "run shell::command capture cat"
+alias pwd "run core::shell pwd"
 
 use shell::history
 run shell::history load

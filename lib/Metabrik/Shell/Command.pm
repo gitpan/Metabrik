@@ -1,5 +1,5 @@
 #
-# $Id: Command.pm 354 2014-11-16 14:25:05Z gomor $
+# $Id: Command.pm 360 2014-11-25 06:50:22Z gomor $
 #
 # shell::command Brik
 #
@@ -7,11 +7,13 @@ package Metabrik::Shell::Command;
 use strict;
 use warnings;
 
+our $VERSION = '1.02';
+
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 354 $',
+      revision => '$Revision: 360 $',
       tags => [ qw(main shell command system) ],
       attributes => {
          as_array => [ qw(0|1) ],

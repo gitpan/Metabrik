@@ -1,5 +1,5 @@
 #
-# $Id: Rc.pm 358 2014-11-22 16:06:30Z gomor $
+# $Id: Rc.pm 360 2014-11-25 06:50:22Z gomor $
 #
 # shell::rc Brik
 #
@@ -7,11 +7,13 @@ package Metabrik::Shell::Rc;
 use strict;
 use warnings;
 
+our $VERSION = '1.02';
+
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 358 $',
+      revision => '$Revision: 360 $',
       tags => [ qw(main shell rc) ],
       attributes => {
          rc_file => [ qw(file) ],

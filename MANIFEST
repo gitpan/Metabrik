@@ -22,3 +22,4 @@ META.json
 META.yml
 t/01-use.t
 t/02-use-briks.t
+README

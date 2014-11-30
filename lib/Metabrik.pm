@@ -1,11 +1,11 @@
 #
-# $Id: Metabrik.pm 358 2014-11-22 16:06:30Z gomor $
+# $Id: Metabrik.pm 362 2014-11-30 11:14:00Z gomor $
 #
 package Metabrik;
 use strict;
 use warnings;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 use base qw(Class::Gomor::Hash);
 
@@ -30,7 +30,7 @@ sub brik_version {
 
 sub brik_properties {
    return {
-      revision => '$Revision: 358 $',
+      revision => '$Revision: 362 $',
       tags => [ qw() ],
       attributes => {
          debug => [ qw(0|1) ],
@@ -410,6 +410,27 @@ sub new {
    return unless $r;
 
    return $self->brik_preinit;
+}
+
+sub new_from_brik {
+   my $self = shift;
+   my ($brik) = @_;
+
+   if (! defined($brik)) {
+      return $self->_log_error("new_from_brik: you must give a Brik object as argument");
+   }
+
+   my $log = $brik->log;
+   my $global = $brik->global;
+   my $context = $brik->context;
+   my $shell = $brik->shell;
+
+   return $self->new(
+      log => $log,
+      global => $global,
+      context => $context,
+      shell => $shell,
+   );
 }
 
 # Build Attributes, Class::Gomor style

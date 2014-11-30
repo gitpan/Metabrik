@@ -1,15 +1,17 @@
 #
-# $Id: Context.pm 358 2014-11-22 16:06:30Z gomor $
+# $Id: Context.pm 362 2014-11-30 11:14:00Z gomor $
 #
 package Metabrik::Core::Context;
 use strict;
 use warnings;
 
+our $VERSION = '1.02';
+
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 358 $',
+      revision => '$Revision: 362 $',
       tags => [ qw(core context main) ],
       attributes => {
          _lp => [ qw(INTERNAL) ],
@@ -152,7 +154,7 @@ sub brik_init {
    my $self = shift;
 
    my $on_int = sub {
-       $self->debug && $self->log->debug("INT captured");
+       $self->debug && $self->log->debug("brik_init: INT captured");
        return 1;
    };
 
@@ -662,7 +664,8 @@ sub run {
       my $__ctx_run = $CON->{used}->{$__ctx_brik};
 
       # Will brik_init() only if not already done
-      if (! $__ctx_run->init_done) {
+      # And only for Brik's Commands, not base class Commands
+      if (! $__ctx_run->init_done && $__ctx_command !~ /^brik_/) {
          if (! $__ctx_run->brik_init) {
             $ERR = 1;
             my $MSG = "run: Brik [$__ctx_brik] init failed";

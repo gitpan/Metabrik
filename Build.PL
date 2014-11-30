@@ -1,5 +1,5 @@
 #
-# $Id: Build.PL 358 2014-11-22 16:06:30Z gomor $
+# $Id: Build.PL 360 2014-11-25 06:50:22Z gomor $
 #
 use strict;
 use warnings;
@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
    dist_author => 'GomoR <gomor_at_metabrik.org>',
    dist_version_from => 'lib/Metabrik.pm',
    requires => {
+      'perl' => '5.6.1',
       'local::lib' => 0,
       'Class::Gomor' => 0,
       'IO::All' => 0,

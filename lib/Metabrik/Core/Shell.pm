@@ -1,5 +1,5 @@
 #
-# $Id: Shell.pm 358 2014-11-22 16:06:30Z gomor $
+# $Id: Shell.pm 362 2014-11-30 11:14:00Z gomor $
 #
 # core::shell Brik
 #
@@ -7,11 +7,13 @@ package Metabrik::Core::Shell;
 use strict;
 use warnings;
 
+our $VERSION = '1.02';
+
 use base qw(Term::Shell Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 358 $',
+      revision => '$Revision: 362 $',
       tags => [ qw(core main shell) ],
       attributes => {
          echo => [ qw(0|1) ],
@@ -246,7 +248,7 @@ sub init {
    $|++;
 
    $SIG{INT} = sub {
-      $self->debug && $self->log->debug("signal: INT caught");
+      $self->debug && $self->log->debug("init: INT caught");
       $self->run_exit;
       return 1;
    };

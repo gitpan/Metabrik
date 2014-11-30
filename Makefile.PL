@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.PL 358 2014-11-22 16:06:30Z gomor $
+# $Id: Makefile.PL 360 2014-11-25 06:50:22Z gomor $
 #
 use ExtUtils::MakeMaker;
 
@@ -7,6 +7,7 @@ require v5.6.1;
 
 WriteMakefile(
    NAME => 'Metabrik',
+   MIN_PERL_VERSION => '5.6.1',
    VERSION_FROM => 'lib/Metabrik.pm',
    LICENSE => 'bsd',
    ABSTRACT_FROM => 'lib/Metabrik.pm',

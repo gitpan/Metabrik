@@ -1,3 +1,8 @@
+1.02 Sun Nov 30 12:28:07 CET 2014
+   - bugfix: bin/metabrik: document --script option
+   - bugfix: core::context: brik_init on first run only when it is not a base class Command
+   - new: metabrik: new_from_brik() method
+
 1.01 Sat Nov 22 17:05:46 CET 2014
    - UPDATE: brik_init: sets init_done Attribute only on success, must be called by subclass at the end
    - bugfix: metabrik: fix inheritance of Briks properties over class hierarchy, like setting default Attributes

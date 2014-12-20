@@ -1,3 +1,13 @@
+1.03 Sat Dec 20 17:48:44 CET 2014
+   - bugfix: shell::script: return proper values from run cmds
+   - bugfix: shell::script: disable SIGINT when running a script
+   - update: core::shell: always complete Briks on use, even when Brik is already used
+   - new: core::global: exit_on_sigint Attribute, for use in scripts
+   - new: core::shell: help_show_inherited and comp_show_inherited Attributes to 
+          respectively show inherited Attributes on help Commands and show inherited 
+          Attributes when using completion
+   - new: bin/metabrik: will load .metabrik_script_rc (if exists) when executing a script
+
 1.02 Sun Nov 30 12:28:07 CET 2014
    - bugfix: bin/metabrik: document --script option
    - bugfix: core::context: brik_init on first run only when it is not a base class Command

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: metabrik 362 2014-11-30 11:14:00Z gomor $
+# $Id: metabrik 367 2014-12-16 21:33:55Z gomor $
 #
 use strict;
 use warnings;
@@ -120,8 +120,16 @@ if (defined($lopts{script})) {
       or die("[F] metabrik: use: shell::script: failed\n");
 
    if ($lopts{rc}) {
-      $context->set('shell::rc', 'rc_file', $lopts{rc})
+      $context->use('shell::rc')
+         or die("[F] metabrik: use: shell::rc: failed\n");
+      $context->set('shell::rc', 'rc_file', $lopts{rc});
    }
+   elsif (-f $ENV{HOME}."/.metabrik_script_rc") {
+      $context->use('shell::rc')
+         or die("[F] metabrik: use: shell::rc: failed\n");
+      $context->set('shell::rc', 'rc_file', $ENV{HOME}."/.metabrik_script_rc");
+   }
+
    $context->set('shell::script', 'debug', $lopts{debug});
    $context->set('shell::script', 'file', $lopts{script});
 

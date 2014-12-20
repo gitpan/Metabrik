@@ -1,11 +1,11 @@
 #
-# $Id: Metabrik.pm 362 2014-11-30 11:14:00Z gomor $
+# $Id: Metabrik.pm 365 2014-12-16 19:45:50Z gomor $
 #
 package Metabrik;
 use strict;
 use warnings;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use base qw(Class::Gomor::Hash);
 
@@ -30,7 +30,7 @@ sub brik_version {
 
 sub brik_properties {
    return {
-      revision => '$Revision: 362 $',
+      revision => '$Revision: 365 $',
       tags => [ qw() ],
       attributes => {
          debug => [ qw(0|1) ],

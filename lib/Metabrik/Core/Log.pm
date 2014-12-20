@@ -1,5 +1,5 @@
 #
-# $Id: Log.pm 360 2014-11-25 06:50:22Z gomor $
+# $Id: Log.pm 365 2014-12-16 19:45:50Z gomor $
 #
 # core::log Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Core::Log;
 use strict;
 use warnings;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 360 $',
+      revision => '$Revision: 365 $',
       tags => [ qw(core main log) ],
       attributes => {
          color => [ qw(0|1) ],

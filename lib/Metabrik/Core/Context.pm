@@ -1,17 +1,17 @@
 #
-# $Id: Context.pm 362 2014-11-30 11:14:00Z gomor $
+# $Id: Context.pm 369 2014-12-19 06:31:59Z gomor $
 #
 package Metabrik::Core::Context;
 use strict;
 use warnings;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 362 $',
+      revision => '$Revision: 369 $',
       tags => [ qw(core context main) ],
       attributes => {
          _lp => [ qw(INTERNAL) ],
@@ -154,8 +154,11 @@ sub brik_init {
    my $self = shift;
 
    my $on_int = sub {
-       $self->debug && $self->log->debug("brik_init: INT captured");
-       return 1;
+      $self->debug && $self->log->debug("brik_init: INT captured");
+      if ($self->global->exit_on_sigint) {
+         exit(1);
+      }
+      return 1;
    };
 
    $SIG{INT} = $on_int;

@@ -1,5 +1,5 @@
 #
-# $Id: Script.pm 360 2014-11-25 06:50:22Z gomor $
+# $Id: Script.pm 369 2014-12-19 06:31:59Z gomor $
 #
 # shell::script Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Shell::Script;
 use strict;
 use warnings;
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 360 $',
+      revision => '$Revision: 369 $',
       tags => [ qw(main shell script) ],
       attributes => {
          file => [ qw(file) ],
@@ -26,6 +26,34 @@ sub brik_properties {
          exec => [ qw($line_list) ],
       },
    };
+}
+
+sub brik_init {
+   my $self = shift;
+
+   my $context = $self->context;
+   my $shell = $self->shell;
+
+   $self->debug && $self->log->debug("brik_init: start");
+
+   if ($context->is_used('shell::rc')) {
+      $self->debug && $self->log->debug("brik_init: load rc file");
+
+      my $cmd = $context->run('shell::rc', 'load');
+      for (@$cmd) {
+         $shell->cmd($_);
+      }
+   }
+
+   $self->debug && $self->log->debug("brik_init: done");
+
+   $SIG{INT} = sub {
+      $self->debug && $self->log->debug("brik_init: INT caught");
+      $shell->run_exit;
+      exit(0);
+   };
+
+   return $self->SUPER::brik_init;
 }
 
 sub load {
@@ -85,12 +113,13 @@ sub exec {
    }
 
    my $context = $self->context;
+   my $shell = $self->shell;
 
    for (@$lines) {
-      if (/^exit$/) {
-         exit(0);
+      if (/^\s*exit\s*(\d+)\s*;/) {
+         exit($1);
       }
-      $context->run('core::shell', 'cmd', $_);
+      $shell->cmd($_);
    }
 
    return 1;

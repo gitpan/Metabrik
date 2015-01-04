@@ -1,5 +1,5 @@
 #
-# $Id: Global.pm 370 2014-12-20 16:50:13Z gomor $
+# $Id: Global.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 # core::global Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Core::Global;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 370 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw(core main global) ],
       attributes => { 
          device => [ qw(device) ],
@@ -86,7 +86,7 @@ Metabrik::Core::Global - core::global Brik
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.

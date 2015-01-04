@@ -1,17 +1,17 @@
 #
-# $Id: Context.pm 369 2014-12-19 06:31:59Z gomor $
+# $Id: Context.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 package Metabrik::Core::Context;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 369 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw(core context main) ],
       attributes => {
          _lp => [ qw(INTERNAL) ],
@@ -682,10 +682,14 @@ sub run {
          }
       }
 
-      my $RUN = $__ctx_run->$__ctx_command(@__ctx_args);
-      if (! defined($RUN)) {
+      my $RUN;
+      my $__ctx_return = $__ctx_run->$__ctx_command(@__ctx_args);
+      if (! defined($__ctx_return)) {
          $ERR = 1;
+         return;
       }
+
+      $RUN = $__ctx_return;
 
       my $REF = \$RUN;
 
@@ -773,7 +777,7 @@ Metabrik::Core::Context - core::context Brik
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.

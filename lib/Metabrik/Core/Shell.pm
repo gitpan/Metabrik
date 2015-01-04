@@ -1,5 +1,5 @@
 #
-# $Id: Shell.pm 366 2014-12-16 19:54:12Z gomor $
+# $Id: Shell.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 # core::shell Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Core::Shell;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Term::Shell Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 366 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw(core main shell) ],
       attributes => {
          echo => [ qw(0|1) ],
@@ -492,12 +492,14 @@ sub run_help {
    }
    else {
       if ($context->is_used($brik)) {
-         my $attributes = $context->run($brik, 'brik_attributes');
-         my $commands = $context->run($brik, 'brik_commands');
+         my $used_brik = $context->used->{$brik};
+
+         my $attributes = $used_brik->brik_attributes;
+         my $commands = $used_brik->brik_commands;
 
          if (! $self->help_show_inherited) {
-            $attributes = $context->used->{$brik}->brik_properties->{attributes};
-            $commands = $context->used->{$brik}->brik_properties->{commands};
+            $attributes = $used_brik->brik_properties->{attributes};
+            $commands = $used_brik->brik_properties->{commands};
          }
 
          my $brik_attributes = Metabrik->brik_properties->{attributes};
@@ -507,7 +509,7 @@ sub run_help {
             if (! $context->get('core::shell', 'help_show_brik_attributes')) {
                next if exists($brik_attributes->{$attribute});
             }
-            my $help = $context->run($brik, 'brik_help_set', $attribute);
+            my $help = $used_brik->brik_help_set($attribute);
             $self->log->info($help) if defined($help);
          }
 
@@ -515,7 +517,7 @@ sub run_help {
             if (! $context->get('core::shell', 'help_show_brik_commands')) {
                next if exists($brik_commands->{$command});
             }
-            my $help = $context->run($brik, 'brik_help_run', $command);
+            my $help = $used_brik->brik_help_run($command);
             $self->log->info($help) if defined($help);
          }
       }
@@ -1048,7 +1050,7 @@ Metabrik::Core::Shell - core::shell Brik
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.

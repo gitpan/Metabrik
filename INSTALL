@@ -1,12 +1,12 @@
 INSTALLATION UNDER UBUNTU LINUX
 
-# apt-get install liblexical-persistence-perl libterm-readline-gnu-perl libnet-ssh2-perl
+# apt-get install liblexical-persistence-perl liblocal-lib-perl libterm-readline-gnu-perl libnet-ssh2-perl
 
 COMMON TO ALL OPERATING SYSTEM
 
 $ mkdir ~/metabrik
-$ svn co http://svn.metabrik.org:81/core/tags/METABRIK_1_00 ~/metabrik/core
-$ svn co http://svn.metabrik.org:81/repository/trunk ~/metabrik/repository
+$ hg clone -r METABRIK_1_04 http://trac.metabrik.org/hg/core ~/metabrik/core
+$ hg clone -r METABRIK_REPOSITORY_1_04 http://trac.metabrik.org/hg/repository ~/metabrik/repository
 
 $ export PATH=$PATH:~/metabrik/core/bin
 $ export PERL_RL=Gnu
@@ -14,3 +14,4 @@ $ export PERL_RL=Gnu
 $ metabrik
 
 Enjoy.
+

@@ -1,11 +1,11 @@
 #
-# $Id: Metabrik.pm 365 2014-12-16 19:45:50Z gomor $
+# $Id: Metabrik.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 package Metabrik;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Class::Gomor::Hash);
 
@@ -23,14 +23,14 @@ sub brik_version {
    my $self = shift;
 
    my $revision = $self->brik_properties->{revision};
-   $revision =~ s/^.*?(\d+).*?$/$1/;
+   $revision =~ s/^.*\s([a-f0-9]+)\s.*$/$1/;
 
    return $VERSION.'.'.$revision;
 }
 
 sub brik_properties {
    return {
-      revision => '$Revision: 365 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw() ],
       attributes => {
          debug => [ qw(0|1) ],
@@ -431,6 +431,15 @@ sub new_from_brik {
       context => $context,
       shell => $shell,
    );
+}
+
+sub new_from_brik_init {
+   my $self = shift;
+
+   my $brik = $self->new_from_brik(@_);
+   $brik->brik_init or $self->_log_error("new_from_brik_init: brik_init failed");
+
+   return $brik;
 }
 
 # Build Attributes, Class::Gomor style
@@ -845,7 +854,7 @@ Metabrik - There is Brik for that.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.

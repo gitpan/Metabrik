@@ -1,5 +1,5 @@
 #
-# $Id: Log.pm 365 2014-12-16 19:45:50Z gomor $
+# $Id: Log.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 # core::log Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Core::Log;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 365 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw(core main log) ],
       attributes => {
          color => [ qw(0|1) ],
@@ -77,7 +77,9 @@ sub error {
 
    print $self->_msg(($caller) ||= caller(), $msg);
 
-   return 0;
+   # Returning undef is my official way of stating an error occured:
+   # Number 0 is for stating a false condition occured, not not error.
+   return;
 }
 
 sub fatal {
@@ -175,7 +177,7 @@ Metabrik::Core::Log - core::log Brik
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.

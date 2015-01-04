@@ -1,3 +1,10 @@
+1.04 Sun Jan  4 13:07:56 CET 2015
+   - bugfix: core::context: don't overwrite $RUN when run Command fails
+   - bugfix: core::shell: help Command must not overwrite $RUN variable
+   - bugfix: core::log: error Command must return undef, this is the error status
+   - new: Metabrik: new_from_brik_init() base method
+   - copyright: update to 2015
+
 1.03 Sat Dec 20 17:48:44 CET 2014
    - bugfix: shell::script: return proper values from run cmds
    - bugfix: shell::script: disable SIGINT when running a script

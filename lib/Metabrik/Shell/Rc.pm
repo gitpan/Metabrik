@@ -1,5 +1,5 @@
 #
-# $Id: Rc.pm 365 2014-12-16 19:45:50Z gomor $
+# $Id: Rc.pm,v 13f84766fbc9 2015/01/04 12:08:22 gomor $
 #
 # shell::rc Brik
 #
@@ -7,13 +7,13 @@ package Metabrik::Shell::Rc;
 use strict;
 use warnings;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use base qw(Metabrik);
 
 sub brik_properties {
    return {
-      revision => '$Revision: 365 $',
+      revision => '$Revision: 13f84766fbc9 $',
       tags => [ qw(main shell rc) ],
       attributes => {
          rc_file => [ qw(file) ],
@@ -158,7 +158,7 @@ Metabrik::Shell::Rc - shell::rc Brik
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2014, Patrice E<lt>GomoRE<gt> Auffret
+Copyright (c) 2014-2015, Patrice E<lt>GomoRE<gt> Auffret
 
 You may distribute this module under the terms of The BSD 3-Clause License.
 See LICENSE file in the source distribution archive.
